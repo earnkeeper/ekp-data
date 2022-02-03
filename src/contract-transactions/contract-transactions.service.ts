@@ -54,13 +54,15 @@ export class ContractTransactions {
     while (true) {
       const nextTxs = (await account.getTransactions(contractAddress, {
         startBlock,
+        endBlock: 999999999,
         offset: 0,
-        endBlock: startBlock + 1800,
+        page: 0,
         sort: 'asc',
       })) as account.Transaction[];
 
       if (nextTxs.length === 0) {
-        console.log(nextTxs);
+        logger.log(`Fetch complete`);
+
         break;
       }
 
