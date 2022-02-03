@@ -51,12 +51,14 @@ export class ContractTransactions {
       `Fetching bsc trans for ${contractAddress} starting at ${startBlock}`,
     );
 
+    let page = 1;
+
     while (true) {
       const nextTxs = (await account.getTransactions(contractAddress, {
         startBlock,
         endBlock: 999999999,
         offset: 5000,
-        page: 1,
+        page: page++,
         sort: 'asc',
       })) as account.Transaction[];
 
@@ -102,8 +104,6 @@ export class ContractTransactions {
           },
         })),
       );
-
-      startBlock = endBlock;
     }
   }
 
