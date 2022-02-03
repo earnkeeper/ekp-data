@@ -1,0 +1,10 @@
+GET https://api.bscscan.com/api
+   ?module=account
+   &action=txlist
+   &address=0x9d173e6c594f479b4d47001f8e6a95a7adda42bc
+   &startblock=9999998
+   &endblock=999999999
+   &page=0
+   &offset=0
+   &sort=asc
+   &apikey=4PICII8UREISKW8ZZYE1D282KMQIR1UW75

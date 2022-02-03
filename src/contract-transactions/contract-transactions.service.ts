@@ -67,11 +67,19 @@ export class ContractTransactions {
       }
 
       const endBlock = Number(
-        _.chain(nextTxs).maxBy('blockNumber').get('blockNumber').value(),
+        _.chain(nextTxs)
+          .map((it) => Number(it.blockNumber))
+          .max()
+          .value(),
       );
 
       const endTimestamp = moment.unix(
-        Number(_.chain(nextTxs).maxBy('timeStamp').get('timeStamp').value()),
+        Number(
+          _.chain(nextTxs)
+            .map((it) => Number(it.timeStamp))
+            .max()
+            .value(),
+        ),
       );
 
       logger.log(
