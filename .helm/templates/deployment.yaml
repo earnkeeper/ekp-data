@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data
+spec:
+  selector:
+    matchLabels:
+      app: data
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: data
+    spec:
+      containers:
+        - name: data
+          image: '{{ .Values.werf.image.data }}'
+          workingDir: /app
+          env:
+            - name: EKP_PLUGIN_ID
+              value: 'data'
+            - name: EKP_PLUGIN_NAME
+              value: 'EKP Data'
+            - name: MORALIS_APP_ID
+              value: '{{ .Values.moralis.appId }}'
+            - name: MORALIS_SERVER_URL
+              value: '{{ .Values.moralis.serverUrl }}'
+            - name: MONGO_HOST
+              value: 'ekp-data-mongodb'
+            - name: REDIS_HOST
+              value: 'ekp-data-redis-master'
+            - name: OPENSEA_API_KEY
+              value: '{{ .Values.opensea.apiKey }}'
+          ports:
+            - containerPort: 3001
+              protocol: TCP

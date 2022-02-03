@@ -1,0 +1,6 @@
+export const ZOAN_CONTRACT_ADDRESS =
+  '0x8bbe571b381ee58dd8f2335a8f0a5b42e83bdcfa';
+export const YAG_CONTRACT_ADDRESS =
+  '0x2722c9db0fc6818dc9dd3a01254afc3804438b64';
+export const ZOON_CONTRACT_ADDRESS =
+  '0x9d173e6c594f479b4d47001f8e6a95a7adda42bc';
