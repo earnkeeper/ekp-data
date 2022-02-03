@@ -55,8 +55,8 @@ export class ContractTransactions {
       const nextTxs = (await account.getTransactions(contractAddress, {
         startBlock,
         endBlock: 999999999,
-        offset: 0,
-        page: 2500,
+        offset: 5000,
+        page: 1,
         sort: 'asc',
       })) as account.Transaction[];
 
