@@ -30,16 +30,32 @@ export class ContractTransactions {
     private sentryService: SentryService,
   ) {}
 
+  private running = false;
+
   onModuleInit() {
     bscscan.setUrl(process.env.BSCSCAN_URL);
     bscscan.setApiKey(process.env.BSCSCAN_API_KEY);
 
     this.fetchBscTrans();
+
+    setInterval(() => {
+      this.fetchBscTrans();
+    }, 60000);
   }
 
   async fetchBscTrans() {
-    for (const contract of contracts) {
-      this.fetchBscTransForContract(contract);
+    if (this.running) {
+      return;
+    }
+
+    this.running = true;
+
+    try {
+      for (const contract of contracts) {
+        this.fetchBscTransForContract(contract);
+      }
+    } finally {
+      this.running = false;
     }
   }
 
