@@ -100,12 +100,6 @@ export class ContractTransactions {
         sort,
       })) as account.Transaction[];
 
-      if (nextTxs.length === 0) {
-        logger.log(`Fetch complete`);
-
-        break;
-      }
-
       const lastBlock = Number(
         _.chain(nextTxs)
           .map((it) => Number(it.blockNumber))
@@ -144,6 +138,11 @@ export class ContractTransactions {
       );
 
       transaction?.finish();
+      if (nextTxs.length < offset) {
+        logger.log(`${contractAddress} Fetch complete`);
+
+        break;
+      }
 
       startBlock = lastBlock;
     }
