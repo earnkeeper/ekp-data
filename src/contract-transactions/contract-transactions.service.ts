@@ -145,7 +145,7 @@ export class ContractTransactions {
 
       transaction?.finish();
 
-      startBlock = endBlock;
+      startBlock = lastBlock;
     }
   }
 
