@@ -38,6 +38,8 @@ spec:
               value: '{{ .Values.bscscan.apiKey }}'
             - name: BSCSCAN_URL
               value: '{{ .Values.bscscan.url }}'
+            - name: SENTRY_DSN
+              value: '{{ .Values.sentry.dsn }}'
           ports:
             - containerPort: 3001
               protocol: TCP
