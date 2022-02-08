@@ -34,7 +34,7 @@ spec:
               value: 'ekp-data-redis-master'
             - name: OPENSEA_API_KEY
               value: '{{ .Values.opensea.apiKey }}'
-            - name: BSCSCAN_KEY
+            - name: BSCSCAN_API_KEY
               value: '{{ .Values.bscscan.apiKey }}'
             - name: BSCSCAN_URL
               value: '{{ .Values.bscscan.url }}'

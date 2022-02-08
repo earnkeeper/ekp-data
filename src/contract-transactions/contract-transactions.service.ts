@@ -8,9 +8,19 @@ import bscscan, { account } from 'bsc-scan';
 import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
-import { ZOON_CONTRACT_ADDRESS } from '../util/constants';
+import {
+  BCOIN_CONTRACT_ADDRESS,
+  BHERO_CONTRACT_ADDRESS,
+  BHOUSE_CONTRACT_ADDRESS,
+  ZOON_CONTRACT_ADDRESS,
+} from '../util/constants';
 
-const contracts = [ZOON_CONTRACT_ADDRESS];
+const contracts = [
+  ZOON_CONTRACT_ADDRESS,
+  BHERO_CONTRACT_ADDRESS,
+  BHOUSE_CONTRACT_ADDRESS,
+  BCOIN_CONTRACT_ADDRESS,
+];
 
 @Injectable()
 export class ContractTransactions {
@@ -18,7 +28,7 @@ export class ContractTransactions {
 
   onModuleInit() {
     bscscan.setUrl(process.env.BSCSCAN_URL);
-    bscscan.setApiKey(process.env.BSCSCAN_KEY);
+    bscscan.setApiKey(process.env.BSCSCAN_API_KEY);
 
     this.fetchBscTrans();
   }
