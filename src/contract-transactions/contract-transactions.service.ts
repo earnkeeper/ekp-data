@@ -51,9 +51,9 @@ export class ContractTransactions {
     this.running = true;
 
     try {
-      for (const contract of contracts) {
-        this.fetchBscTransForContract(contract);
-      }
+      await Promise.all(
+        contracts.map((contract) => this.fetchBscTransForContract(contract)),
+      );
     } finally {
       this.running = false;
     }
