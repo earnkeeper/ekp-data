@@ -3,6 +3,7 @@ import {
   Transaction,
   TransactionService,
 } from '@earnkeeper/ekp-sdk-nestjs';
+import { SentryService } from '@earnkeeper/ekp-sdk-nestjs/dist/sdk/sentry/sentry.service';
 import { Injectable } from '@nestjs/common';
 import bscscan, { account } from 'bsc-scan';
 import { ethers } from 'ethers';
@@ -24,7 +25,10 @@ const contracts = [
 
 @Injectable()
 export class ContractTransactions {
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private sentryService: SentryService,
+  ) {}
 
   onModuleInit() {
     bscscan.setUrl(process.env.BSCSCAN_URL);
@@ -62,12 +66,22 @@ export class ContractTransactions {
     );
 
     while (true) {
+      const endBlock = 999999999;
+      const offset = 5000;
+      const page = 1;
+      const sort = 'asc';
+      const url = `${process.env.BSCSCAN_URL}/api?module=account&action=txlist&address=${contractAddress}&startBlock=${startBlock}&endBlock=${endBlock}&offset=${offset}&page=${page}&sort=${sort}`;
+      const transaction = this.sentryService.startTransaction({
+        name: url,
+        op: url,
+      });
+
       const nextTxs = (await account.getTransactions(contractAddress, {
         startBlock,
-        endBlock: 999999999,
-        offset: 5000,
-        page: 1,
-        sort: 'asc',
+        endBlock,
+        offset,
+        page,
+        sort,
       })) as account.Transaction[];
 
       if (nextTxs.length === 0) {
@@ -76,7 +90,7 @@ export class ContractTransactions {
         break;
       }
 
-      const endBlock = Number(
+      const lastBlock = Number(
         _.chain(nextTxs)
           .map((it) => Number(it.blockNumber))
           .max()
@@ -93,7 +107,7 @@ export class ContractTransactions {
       );
 
       logger.log(
-        `${contractAddress}: Fetched ${nextTxs.length} trans from ${startBlock} to ${endBlock}, ${endTimestamp}`,
+        `${contractAddress}: Fetched ${nextTxs.length} trans from ${startBlock} to ${lastBlock}, ${endTimestamp}`,
       );
 
       const nextModels = nextTxs.map((tx) =>
@@ -112,6 +126,8 @@ export class ContractTransactions {
           },
         })),
       );
+
+      transaction?.finish();
 
       startBlock = endBlock;
     }
