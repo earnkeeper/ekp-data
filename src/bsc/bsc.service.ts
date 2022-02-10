@@ -5,9 +5,9 @@ import {
   TransactionService,
 } from '@earnkeeper/ekp-sdk-nestjs';
 import { Injectable } from '@nestjs/common';
-import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
+import { parseNumber } from '../util';
 import { BscScanService } from './bsc-scan.service';
 import { LogDto, TransactionDto } from './dto';
 
@@ -194,25 +194,21 @@ export class BscService {
       blockNumber: Number(tx.blockNumber),
       blockTimestamp: Number(tx.timeStamp),
       fromAddress: tx.from,
-      gas: isNaN(Number(tx.gas)) ? undefined : Number(tx.gas),
-      gasPrice: Number(ethers.utils.formatEther(tx.gasPrice)),
+      gas: parseNumber(tx.gas),
+      gasPrice: parseNumber(tx.gasPrice),
       hash: tx.hash,
       input: tx.input,
-      nonce: isNaN(Number(tx.nonce)) ? undefined : Number(tx.nonce),
+      nonce: parseNumber(tx.nonce),
       ownerAddress,
       ownerChain,
       raw: tx,
       receiptContractAddress: tx.contractAddress,
-      receiptCumulativeGasUsed: isNaN(Number(tx.cumulativeGasUsed))
-        ? undefined
-        : Number(tx.cumulativeGasUsed),
-      receiptGasUsed: isNaN(Number(tx.gasUsed))
-        ? undefined
-        : Number(tx.gasUsed),
+      receiptCumulativeGasUsed: parseNumber(tx.cumulativeGasUsed),
+      receiptGasUsed: parseNumber(tx.gasUsed),
       receiptRoot: undefined,
       receiptStatus: tx.txreceipt_status,
       toAddress: tx.to,
-      transactionIndex: Number(tx.transactionIndex),
+      transactionIndex: parseNumber(tx.transactionIndex),
       value: tx.value,
     };
   }
@@ -220,13 +216,13 @@ export class BscService {
   private mapBscLog(log: LogDto): TransactionLog {
     return {
       address: log.address,
-      blockNumber: Number(log.blockNumber),
-      blockTimestamp: Number(log.timeStamp),
+      blockNumber: parseNumber(log.blockNumber),
+      blockTimestamp: parseNumber(log.timeStamp),
       data: log.data,
-      logIndex: Number(log.logIndex),
+      logIndex: parseNumber(log.logIndex),
       ownerChain: 'bsc',
       transactionHash: log.transactionHash,
-      transactionIndex: Number(log.transactionIndex),
+      transactionIndex: parseNumber(log.transactionIndex),
       topic0: log.topics[0],
       topic1: log.topics[1],
       topic2: log.topics[2],
