@@ -9,3 +9,6 @@ mongodb:
     size: 32Gi
   auth:
     enabled: false
+  resources:
+    limits:
+      memory: 4Gi
