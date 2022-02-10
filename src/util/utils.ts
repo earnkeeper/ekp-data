@@ -7,7 +7,9 @@ export function parseNumber(value: string) {
 
   let num: number;
 
-  if (value.startsWith('0x')) {
+  if (value === '0x') {
+    return 0;
+  } else if (value.startsWith('0x')) {
     num = ethers.BigNumber.from(value).toNumber();
   } else {
     num = Number(value);
