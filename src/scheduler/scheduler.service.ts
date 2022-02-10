@@ -4,6 +4,7 @@ import {
   BCOIN_CONTRACT_ADDRESS,
   BHERO_CONTRACT_ADDRESS,
   BHOUSE_CONTRACT_ADDRESS,
+  TRANSFER_TOPIC,
   ZOON_CONTRACT_ADDRESS,
 } from '../util/constants';
 
@@ -39,7 +40,7 @@ export class SchedulerService {
         contracts.map((contract) =>
           Promise.all([
             this.bscService.syncTransactions(contract),
-            this.bscService.syncLogs(contract),
+            this.bscService.syncLogs(contract, TRANSFER_TOPIC),
           ]),
         ),
       );
