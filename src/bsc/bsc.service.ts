@@ -9,57 +9,24 @@ import bscscan, { account } from 'bsc-scan';
 import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
-import {
-  BCOIN_CONTRACT_ADDRESS,
-  BHERO_CONTRACT_ADDRESS,
-  BHOUSE_CONTRACT_ADDRESS,
-  ZOON_CONTRACT_ADDRESS,
-} from '../util/constants';
-
-const contracts = [
-  ZOON_CONTRACT_ADDRESS,
-  BHERO_CONTRACT_ADDRESS,
-  BHOUSE_CONTRACT_ADDRESS,
-  BCOIN_CONTRACT_ADDRESS,
-];
 
 @Injectable()
-export class ContractTransactions {
+export class BscService {
   constructor(
     private transactionService: TransactionService,
     private sentryService: SentryService,
   ) {}
 
-  private running = false;
-
   onModuleInit() {
     bscscan.setUrl(process.env.BSCSCAN_URL);
     bscscan.setApiKey(process.env.BSCSCAN_API_KEY);
-
-    this.fetchBscTrans();
-
-    setInterval(() => {
-      this.fetchBscTrans();
-    }, 60000);
   }
 
-  async fetchBscTrans() {
-    if (this.running) {
-      return;
-    }
-
-    this.running = true;
-
-    try {
-      await Promise.all(
-        contracts.map((contract) => this.fetchBscTransForContract(contract)),
-      );
-    } finally {
-      this.running = false;
-    }
+  async syncLogs(contractAddress: string) {
+    console.log('Skipping');
   }
 
-  async fetchBscTransForContract(contractAddress: string) {
+  async syncTransactions(contractAddress: string) {
     const existingModels = await this.transactionService.transactionModel
       .find({
         ownerChain: 'bsc',
@@ -130,6 +97,7 @@ export class ContractTransactions {
             filter: {
               ownerChain: model.ownerChain,
               ownerAddress: contractAddress,
+              hash: model.hash,
             },
             update: { $set: model },
             upsert: true,

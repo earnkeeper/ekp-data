@@ -1,16 +1,9 @@
 import { SdkModule } from '@earnkeeper/ekp-sdk-nestjs';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ContractTransactions } from './contract-transactions/contract-transactions.service';
-import { Transaction, TransactionSchema } from './schema';
-
+import { BscService } from './bsc/bsc.service';
+import { SchedulerService } from './scheduler/scheduler.service';
 @Module({
-  imports: [
-    SdkModule,
-    // MongooseModule.forFeature([
-    //   { name: Transaction.name, schema: TransactionSchema },
-    // ]),
-  ],
-  providers: [ContractTransactions],
+  imports: [SdkModule],
+  providers: [BscService, SchedulerService],
 })
 export class WorkerApp {}
