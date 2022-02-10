@@ -19,23 +19,15 @@ export class BscService {
   ) {}
 
   async syncLogs(contractAddress: string, topic0: string) {
-    const existingModels = await this.transactionService.transactionLogModel
-      .find({
+    const lastModel = await this.transactionService.transactionLogModel
+      .findOne({
         address: contractAddress,
         topic0,
       })
-      .limit(1)
       .sort('-blockNumber')
       .exec();
 
-    let startBlock = 0;
-
-    if (existingModels.length > 0) {
-      startBlock = _.chain(existingModels)
-        .map((it) => it.blockNumber)
-        .max()
-        .value();
-    }
+    let startBlock = lastModel?.blockNumber ?? 0;
 
     logger.log(
       `Fetching bsc logs for ${contractAddress} starting at ${startBlock}`,
@@ -100,22 +92,16 @@ export class BscService {
   }
 
   async syncTransactions(contractAddress: string) {
-    const existingModels = await this.transactionService.transactionModel
-      .find({
+    const lastModel = await this.transactionService.transactionModel
+      .findOne({
         ownerChain: 'bsc',
         ownerAddress: contractAddress,
         source: 'bscscan',
       })
+      .sort('-blockNumber')
       .exec();
 
-    let startBlock = 0;
-
-    if (existingModels.length > 0) {
-      startBlock = _.chain(existingModels)
-        .map((it) => it.blockNumber)
-        .max()
-        .value();
-    }
+    let startBlock = lastModel?.blockNumber ?? 0;
 
     logger.log(
       `Fetching bsc trans for ${contractAddress} starting at ${startBlock}`,
