@@ -5,5 +5,7 @@ redis:
     replicaCount: 1
 
 mongodb:
+  persistence:
+    size: 32Gi
   auth:
     enabled: false
