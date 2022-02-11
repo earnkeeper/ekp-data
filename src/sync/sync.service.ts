@@ -7,20 +7,21 @@ import {
 import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
 import moment from 'moment';
+import { LogDto, TransactionDto } from '../etherscan/dto';
+import { EtherscanService } from '../etherscan/etherscan.service';
 import { parseNumber } from '../util';
-import { BscScanService } from './bsc-scan.service';
-import { LogDto, TransactionDto } from './dto';
 
 @Injectable()
-export class BscService {
+export class SyncService {
   constructor(
     private transactionService: TransactionService,
-    private bscscanService: BscScanService,
+    private etherService: EtherscanService,
   ) {}
 
-  async syncLogs(contractAddress: string, topic0: string) {
+  async syncLogs(chain: string, contractAddress: string, topic0: string) {
     const lastModel = await this.transactionService.transactionLogModel
       .findOne({
+        ownerChain: chain,
         address: contractAddress,
         topic0,
       })
@@ -30,13 +31,14 @@ export class BscService {
     let startBlock = lastModel?.blockNumber ?? 0;
 
     logger.log(
-      `Fetching bsc logs for ${contractAddress} starting at ${startBlock}`,
+      `Fetching logs for ${contractAddress} starting at ${startBlock}`,
     );
 
     while (true) {
       const endBlock = 999999999;
 
-      const nextLogs = await this.bscscanService.getLogs(
+      const nextLogs = await this.etherService.getLogs(
+        chain,
         contractAddress,
         topic0,
         startBlock,
@@ -63,7 +65,7 @@ export class BscService {
         `${contractAddress}: Fetched ${nextLogs.length} logs from ${startBlock} to ${lastBlock}, ${endTimestamp}`,
       );
 
-      const nextModels = nextLogs.map((log) => this.mapBscLog(log));
+      const nextModels = nextLogs.map((log) => this.mapLog(log, chain));
 
       await this.transactionService.transactionLogModel.bulkWrite(
         nextModels.map((model) => ({
@@ -91,12 +93,11 @@ export class BscService {
     }
   }
 
-  async syncTransactions(contractAddress: string) {
+  async syncTransactions(chain: string, contractAddress: string) {
     const lastModel = await this.transactionService.transactionModel
       .findOne({
-        ownerChain: 'bsc',
+        ownerChain: chain,
         ownerAddress: contractAddress,
-        source: 'bscscan',
       })
       .sort('-blockNumber')
       .exec();
@@ -104,7 +105,7 @@ export class BscService {
     let startBlock = lastModel?.blockNumber ?? 0;
 
     logger.log(
-      `Fetching bsc trans for ${contractAddress} starting at ${startBlock}`,
+      `Fetching transactions for ${contractAddress} starting at ${startBlock}`,
     );
 
     while (true) {
@@ -113,7 +114,8 @@ export class BscService {
       const page = 1;
       const sort = 'asc';
 
-      const nextTxs = await this.bscscanService.getTransactions(
+      const nextTxs = await this.etherService.getTransactions(
+        chain,
         contractAddress,
         startBlock,
         endBlock,
@@ -143,7 +145,7 @@ export class BscService {
       );
 
       const nextModels = nextTxs.map((tx) =>
-        this.mapBscTransaction(tx, 'bsc', contractAddress),
+        this.mapTransaction(tx, chain, contractAddress),
       );
 
       await this.transactionService.transactionModel.bulkWrite(
@@ -170,7 +172,7 @@ export class BscService {
     }
   }
 
-  private mapBscTransaction(
+  private mapTransaction(
     tx: TransactionDto,
     ownerChain: string,
     ownerAddress: string,
@@ -199,14 +201,14 @@ export class BscService {
     };
   }
 
-  private mapBscLog(log: LogDto): TransactionLog {
+  private mapLog(log: LogDto, ownerChain: string): TransactionLog {
     return {
       address: log.address,
       blockNumber: parseNumber(log.blockNumber),
       blockTimestamp: parseNumber(log.timeStamp),
       data: log.data,
       logIndex: parseNumber(log.logIndex),
-      ownerChain: 'bsc',
+      ownerChain,
       transactionHash: log.transactionHash,
       transactionIndex: parseNumber(log.transactionIndex),
       topic0: log.topics[0],

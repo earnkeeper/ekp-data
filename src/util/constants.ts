@@ -14,3 +14,6 @@ export const BCOIN_CONTRACT_ADDRESS =
 
 export const TRANSFER_TOPIC =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+
+export const BLOCK_CONTRACT_ADDRESS =
+  '0x807a0774236a0fbe9e7f8e7df49edfed0e6777ea';

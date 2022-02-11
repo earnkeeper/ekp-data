@@ -38,6 +38,10 @@ spec:
               value: '{{ .Values.bscscan.apiKey }}'
             - name: BSCSCAN_URL
               value: '{{ .Values.bscscan.url }}'
+            - name: ETHERSCAN_API_KEY
+              value: '{{ .Values.etherscan.apiKey }}'
+            - name: ETHERSCAN_URL
+              value: '{{ .Values.etherscan.url }}'
             - name: SENTRY_DSN
               value: '{{ .Values.sentry.dsn }}'
           ports:
