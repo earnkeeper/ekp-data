@@ -6,7 +6,7 @@ redis:
 
 mongodb:
   persistence:
-    size: 32Gi
+    size: 64Gi
   auth:
     enabled: false
   resources:

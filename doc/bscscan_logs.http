@@ -1,0 +1,1 @@
+GET https://api.bscscan.com/api?module=logs&action=getLogs&address=0x00e1656e45f18ec6747f5a8496fd39b50b38396d&fromBlock=14204562&toBlock=999999999&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&apikey=4PICII8UREISKW8ZZYE1D282KMQIR1UW75

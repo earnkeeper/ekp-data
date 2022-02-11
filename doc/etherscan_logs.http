@@ -1,0 +1,1 @@
+GET https://api.etherscan.com/api?module=logs&action=getLogs&address=0x807a0774236a0fbe9e7f8e7df49edfed0e6777ea&fromBlock=0&toBlock=999999999&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
