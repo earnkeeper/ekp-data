@@ -42,7 +42,7 @@ export class BscScanService extends AbstractApiService {
     page: number,
     sort: string,
   ): Promise<TransactionDto[]> {
-    const url = `${process.env.BSCSCAN_URL}/api?module=logs&action=getLogs&address=${contractAddress}&fromBlock=${fromBlock}&toBlock=${toBlock}&offset=${offset}&page=${page}&sort=${sort}&apikey=${process.env.BSCSCAN_API_KEY}`;
+    const url = `${process.env.BSCSCAN_URL}/api?module=account&action=txlist&address=${contractAddress}&startBlock=${fromBlock}&endBlock=${toBlock}&offset=${offset}&page=${page}&sort=${sort}&apikey=${process.env.BSCSCAN_API_KEY}`;
 
     return this.handleCall(
       {
