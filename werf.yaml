@@ -1,6 +1,6 @@
 configVersion: 1
 project: ekp-data
 ---
-image: data
+image: app
 dockerfile: Dockerfile
 context: .

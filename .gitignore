@@ -40,3 +40,4 @@ clear-values.yaml
 
 # Nest.js
 .env
+render.yaml

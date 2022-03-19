@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        app: data
+        app: {{ .Release.Name }}-app
     spec:
       containers:
-        - name: data
-          image: '{{ .Values.werf.image.data }}'
+        - name: {{ .Release.Name }}-nodejs
+          image: '{{ .Values.werf.image.app }}'
           workingDir: /app
           env:
             - name: EKP_PLUGIN_ID
@@ -29,9 +29,11 @@ spec:
             - name: MORALIS_SERVER_URL
               value: '{{ .Values.moralis.serverUrl }}'
             - name: MONGO_HOST
-              value: 'ekp-data-mongodb'
+              value: '{{ .Release.Name }}-mongodb-headless'
+            - name: MONGO_DB_NAME
+              value: '{{ .Release.Name }}'
             - name: REDIS_HOST
-              value: 'ekp-data-redis-master'
+              value: '{{ .Release.Name }}-redis-master'
             - name: OPENSEA_API_KEY
               value: '{{ .Values.opensea.apiKey }}'
             - name: BSCSCAN_API_KEY
@@ -44,6 +46,8 @@ spec:
               value: '{{ .Values.etherscan.url }}'
             - name: SENTRY_DSN
               value: '{{ .Values.sentry.dsn }}'
+            - name: NODE_ENV
+              value: '{{ .Values.werf.env | default "production" }}'              
           ports:
             - containerPort: 3001
               protocol: TCP
